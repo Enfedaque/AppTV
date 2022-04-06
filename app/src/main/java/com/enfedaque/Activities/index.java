@@ -19,7 +19,6 @@ import com.enfedaque.adaptadores.recyclerViewAdapterPOPULAR;
 import com.enfedaque.domain.peliculas;
 import com.enfedaque.domain.respuestaPeliculas;
 import com.enfedaque.API.PeliculasAPI;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -36,8 +35,6 @@ public class index extends AppCompatActivity {
     private RecyclerView pruebas;
     private RecyclerView pruebas2;
 
-    private FloatingActionButton fab;
-
     private PeliculasAPI peliculasAPI;
 
     @Override
@@ -50,22 +47,10 @@ public class index extends AppCompatActivity {
         TaskVideos taskVideos=new TaskVideos();
         taskVideos.execute();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent miIntent=new Intent(getBaseContext(), upcoming.class);
-                startActivity(miIntent);
-            }
-        });
     }
 
     //Hilo que me va a lanzar la busqueda en la API
     class TaskVideos extends AsyncTask<Integer, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-
-        }
 
         @Override
         protected String doInBackground(Integer... strings) {
@@ -78,11 +63,6 @@ public class index extends AppCompatActivity {
             }
 
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-
         }
     }
 
@@ -98,6 +78,10 @@ public class index extends AppCompatActivity {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
             Intent miIntent=new Intent(this, index.class);
+            startActivity(miIntent);
+            return true;
+        }else if(item.getItemId() == R.id.fondoMapa){
+            Intent miIntent=new Intent(this, Mapa.class);
             startActivity(miIntent);
             return true;
         }
@@ -276,7 +260,6 @@ public class index extends AppCompatActivity {
         rvRecyclerView=findViewById(R.id.rvRecyclerViewPopular);
         pruebas=findViewById(R.id.rv2);
         pruebas2=findViewById(R.id.rv3);
-        fab=findViewById(R.id.floatingActionButton);
     }
 
 
