@@ -29,12 +29,12 @@
             android:text="titulo"
             android:textAlignment="center"
             android:textColor="#2196F3"
-            android:textSize="26sp" />
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="7dp"
+            android:layout_margin="5dp"
             android:layout_weight="5"
             android:orientation="horizontal">
 
@@ -46,7 +46,7 @@
                 android:text="2022-03-14"
                 android:textAlignment="center"
                 android:textColor="#73C1EC"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/generoPrincipal"
@@ -56,25 +56,18 @@
                 android:text="populairty"
                 android:textAlignment="center"
                 android:textColor="#73C1EC"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/overviewPrincipal"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="20dp"
-            android:layout_weight="30"
+            android:layout_margin="15dp"
+            android:layout_weight="47"
             android:text="TextView"
             android:textColor="#C1E3F6"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/otrosPrincipal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="20dp"
-            android:layout_weight="18"
-            android:textColor="#F6E04C" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

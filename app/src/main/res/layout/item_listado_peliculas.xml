@@ -9,12 +9,34 @@
     android:orientation="horizontal"
     android:weightSum="100">
 
-    <ImageView
-        android:id="@+id/portada"
-        android:layout_width="145dp"
-        android:layout_height="180dp"
-        android:layout_weight="100"
-        app:srcCompat="@drawable/pelicula"
-        tools:srcCompat="@drawable/brave" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="85" >
+
+        <ImageView
+            android:id="@+id/portada"
+            android:layout_width="145dp"
+            android:layout_height="180dp"
+            android:layout_weight="85"
+            app:srcCompat="@drawable/pelicula"
+            tools:srcCompat="@drawable/brave" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/FAV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="130dp"
+            android:backgroundTint="#000000"
+            android:clickable="true"
+            android:tint="@color/purple_200"
+            android:tintMode="add"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/heart" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
