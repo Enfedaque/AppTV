@@ -86,7 +86,6 @@ public class videos extends AppCompatActivity {
         popularity =findViewById(R.id.generoPrincipal);
         fechaPrincipal=findViewById(R.id.fechaPrincipal);
         overviewPrincipal=findViewById(R.id.overviewPrincipal);
-        otrosPrincipal=findViewById(R.id.otrosPrincipal);
     }
 
     //MEnu superior àra volver al index o recargarlo
