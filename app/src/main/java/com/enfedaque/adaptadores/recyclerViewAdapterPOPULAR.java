@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.enfedaque.R;
 import com.enfedaque.domain.peliculas;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -23,10 +24,12 @@ public class recyclerViewAdapterPOPULAR
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public ImageView portada;
+        public FloatingActionButton fab;
 
         public MyViewHolder(View view){
             super(view);
             portada=view.findViewById(R.id.portada);
+            fab=view.findViewById(R.id.FAV);
         }
     }
 

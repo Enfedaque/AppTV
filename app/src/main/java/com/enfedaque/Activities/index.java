@@ -114,6 +114,7 @@ public class index extends AppCompatActivity {
                         rvAdapter.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+
                                 Intent miIntent=new Intent(getApplicationContext(), videos.class);
                                 miIntent.putExtra("ID", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getId()));
                                 miIntent.putExtra("Titulo", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOriginal_title());

@@ -10,10 +10,20 @@ public class favoritos {
     private long idFav;
     private String idPelicula;
     private String tituloPelicula;
+    private long idUsuario;
 
-    public favoritos(String idPelicula, String tituloPelicula) {
+    public favoritos(String idPelicula, String tituloPelicula, long idUsuario) {
         this.idPelicula = idPelicula;
         this.tituloPelicula = tituloPelicula;
+        this.idUsuario=idUsuario;
+    }
+
+    public long getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(long idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     public long getIdFav() {
