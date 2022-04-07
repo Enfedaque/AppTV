@@ -15,5 +15,8 @@ public interface usuarioDAO {
 
     //Validar login
     @Query("SELECT pass FROM usuario WHERE email= :email")
-    String findById(String email);
+    String findByEmail(String email);
+
+    @Query("SELECT idUsuario FROM usuario WHERE email= :email")
+    long findById(String email);
 }

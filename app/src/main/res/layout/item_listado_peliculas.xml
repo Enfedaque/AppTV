@@ -30,6 +30,7 @@
             android:layout_marginTop="130dp"
             android:backgroundTint="#000000"
             android:clickable="true"
+            android:onClick="marcarFavorito"
             android:tint="@color/purple_200"
             android:tintMode="add"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
+import com.enfedaque.UTILS.GlobalVars;
 import com.enfedaque.domain.usuario;
 
 import java.util.HashMap;
@@ -74,9 +75,15 @@ public class Login extends AppCompatActivity {
                     "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
             try{
-                String password= database.usuarioDAO().findById(email);
+                String password= database.usuarioDAO().findByEmail(email);
+                long Id= database.usuarioDAO().findById(email);
                 if (password!=null){
                     if (password.equalsIgnoreCase(pass)){
+
+                        GlobalVars.setIdUsuario(Id);
+                        GlobalVars.setEmail(email);
+                        GlobalVars.setPass(pass);
+
                         Toast.makeText(getApplicationContext(), "Bienvenido de nuevo " + email, Toast.LENGTH_LONG).show();
                         Intent miIntent=new Intent(this, index.class);
                         startActivity(miIntent);

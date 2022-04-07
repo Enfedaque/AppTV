@@ -236,6 +236,7 @@ public class index extends AppCompatActivity {
                                 startActivity(miIntent);
 
                             }
+
                         });
 
 
@@ -263,6 +264,11 @@ public class index extends AppCompatActivity {
         pruebas2=findViewById(R.id.rv3);
     }
 
+    //Añadir una pelicula a FAVORITOS
+    public void marcarFavorito(View view){
+
+        Toast.makeText(getApplicationContext(), "Pelicula añadida a FAVORITOS" , Toast.LENGTH_LONG).show();
+    }
 
 
 }

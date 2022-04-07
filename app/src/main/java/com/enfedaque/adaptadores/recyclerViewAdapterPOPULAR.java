@@ -1,14 +1,20 @@
 package com.enfedaque.adaptadores;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
+import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
+import com.enfedaque.UTILS.GlobalVars;
+import com.enfedaque.domain.favoritos;
 import com.enfedaque.domain.peliculas;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
@@ -21,6 +27,7 @@ public class recyclerViewAdapterPOPULAR
 
     private List<peliculas> listadoPeliculas;
     private View.OnClickListener listener;
+    public FloatingActionButton fab;
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public ImageView portada;
@@ -48,9 +55,21 @@ public class recyclerViewAdapterPOPULAR
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, @SuppressLint("RecyclerView") int position) {
         peliculas miPelicula= listadoPeliculas.get(position);
         Picasso.get().load("https://image.tmdb.org/t/p/w500/" + miPelicula.getPoster_path()).into(holder.portada);
+
+        holder.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                peliculas miPeli=listadoPeliculas.get(position);
+                baseDeDatos database= Room.databaseBuilder(view.getContext(), baseDeDatos.class,
+                        "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+                database.peliculaDAO().insert(new favoritos(String.valueOf(miPeli.getId()), miPelicula.getOriginal_title(),
+                        GlobalVars.getIdUsuario()));
+                Toast.makeText(view.getContext(), "Añadida a FAVORITOS", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @Override
@@ -67,6 +86,7 @@ public class recyclerViewAdapterPOPULAR
         if (listener!=null){
             listener.onClick(view);
         }
+
     }
 
 }
