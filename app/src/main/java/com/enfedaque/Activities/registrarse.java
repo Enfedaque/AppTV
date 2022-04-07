@@ -1,6 +1,7 @@
 package com.enfedaque.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
 import com.enfedaque.domain.usuario;
 
@@ -75,7 +77,13 @@ public class registrarse extends AppCompatActivity {
             Toast.makeText(this, "Debe rellenar todos los campos", Toast.LENGTH_LONG).show();
         }else{
             usuario=new usuario(nombreUsuario, email, pass);
-            registro("http://192.168.1.105/appTV/addUsuario.php");
+
+            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
+                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+            database.usuarioDAO().insert(usuario);
+            Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_LONG).show();
+            Intent miIntent=new Intent(this, Login.class);
+            startActivity(miIntent);
         }
     }
 
@@ -87,38 +95,5 @@ public class registrarse extends AppCompatActivity {
         cbTerminos.setChecked(false);
     }
 
-    //Crear nuevo usuario
-    public void registro(String URL){
-        StringRequest stringRequest=new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (!response.isEmpty()){
-                    System.out.println(response.toUpperCase());
-                    Toast.makeText(registrarse.this, "Usuario creado con exito", Toast.LENGTH_LONG).show();
-                    Intent miIntent=new Intent(getApplicationContext(), index.class);
-                    startActivity(miIntent);
-                }else{
-                    Toast.makeText(registrarse.this, "Ha surgido algun error", Toast.LENGTH_LONG).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(registrarse.this, "Error al intentar conectar", Toast.LENGTH_LONG).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> parametros=new HashMap<String, String>();
-                parametros.put("nombre", usuario.getNombreUsuario());
-                parametros.put("email", usuario.getEmail());
-                parametros.put("password", usuario.getPass());
-                return parametros;
-            }
-        };
-
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
-    }
 
 }

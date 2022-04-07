@@ -1,8 +1,10 @@
 package com.enfedaque.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,7 +18,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
+import com.enfedaque.domain.usuario;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +43,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //login("http://192.168.1.105/appTV/login.php");
-                Intent miIntent=new Intent(getApplicationContext(), index.class);
-                startActivity(miIntent);
+                validarDatos();
             }
         });
 
@@ -62,38 +64,35 @@ public class Login extends AppCompatActivity {
         btnCrearCuenta=findViewById(R.id.btnCrearCuenta);
     }
 
-    //Hacer login
-    public void login(String URL){
-        StringRequest stringRequest=new StringRequest(Request.Method.POST, URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (!response.isEmpty()){
-                    Toast.makeText(Login.this, "Bienvenido de nuevo", Toast.LENGTH_LONG).show();
-                    Intent miIntent=new Intent(getApplicationContext(), index.class);
-                    startActivity(miIntent);
-                }else{
-                    Toast.makeText(Login.this, "Usuario o contraseña incorrecta", Toast.LENGTH_LONG).show();
-                    etEmail.setText("");
-                    etPassword.setText("");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(Login.this, "Error al intentar conectar", Toast.LENGTH_LONG).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> parametros=new HashMap<String, String>();
-                parametros.put("email", etEmail.getText().toString());
-                parametros.put("password", etPassword.getText().toString());
-                return parametros;
-            }
-        };
+    //Valido si ya hay cuenta con esos datos
+    private void validarDatos(){
+        String email=etEmail.getText().toString();
+        String pass=etPassword.getText().toString();
 
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        if (!email.equalsIgnoreCase("") && !pass.equalsIgnoreCase("")){
+            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
+                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
+            try{
+                String password= database.usuarioDAO().findById(email);
+                if (password!=null){
+                    if (password.equalsIgnoreCase(pass)){
+                        Toast.makeText(getApplicationContext(), "Bienvenido de nuevo " + email, Toast.LENGTH_LONG).show();
+                        Intent miIntent=new Intent(this, index.class);
+                        startActivity(miIntent);
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+            }catch (SQLiteException e){
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+            }
+
+        }else{
+            Toast.makeText(getApplicationContext(), "Rellene todos los campos", Toast.LENGTH_LONG).show();
+        }
     }
 
     //Crear nuevo cuenta de usuario
