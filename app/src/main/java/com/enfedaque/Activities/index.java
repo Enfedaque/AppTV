@@ -30,10 +30,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class index extends AppCompatActivity {
 
-    private RecyclerView rvRecyclerView;
+    private RecyclerView rvPopular;
     private recyclerViewAdapterPOPULAR rvAdapter;
-    private RecyclerView pruebas;
-    private RecyclerView pruebas2;
+    private RecyclerView rvTop;
+    private RecyclerView rvOther;
 
     private PeliculasAPI peliculasAPI;
 
@@ -84,6 +84,10 @@ public class index extends AppCompatActivity {
             Intent miIntent=new Intent(this, Mapa.class);
             startActivity(miIntent);
             return true;
+        }else if(item.getItemId() == R.id.verFav){
+            Intent miIntent=new Intent(this, verFavoritos.class);
+            startActivity(miIntent);
+            return true;
         }
         return true;
     }
@@ -108,19 +112,19 @@ public class index extends AppCompatActivity {
                         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
                         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
                                 RecyclerView.HORIZONTAL, false);
-                        rvRecyclerView.setLayoutManager(mLayoutManager);
-                        rvRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                        rvRecyclerView.setAdapter(rvAdapter);
+                        rvPopular.setLayoutManager(mLayoutManager);
+                        rvPopular.setItemAnimator(new DefaultItemAnimator());
+                        rvPopular.setAdapter(rvAdapter);
                         rvAdapter.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
 
                                 Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOverview());
+                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
                                 startActivity(miIntent);
 
                             }
@@ -164,19 +168,19 @@ public class index extends AppCompatActivity {
                         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
                         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
                                 RecyclerView.HORIZONTAL, false);
-                        pruebas.setLayoutManager(mLayoutManager);
-                        pruebas.setItemAnimator(new DefaultItemAnimator());
-                        pruebas.setAdapter(rvAdapter);
+                        rvTop.setLayoutManager(mLayoutManager);
+                        rvTop.setItemAnimator(new DefaultItemAnimator());
+                        rvTop.setAdapter(rvAdapter);
 
                         rvAdapter.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOverview());
+                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
                                 startActivity(miIntent);
 
                             }
@@ -220,19 +224,19 @@ public class index extends AppCompatActivity {
                         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
                         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
                                 RecyclerView.HORIZONTAL, false);
-                        pruebas2.setLayoutManager(mLayoutManager);
-                        pruebas2.setItemAnimator(new DefaultItemAnimator());
-                        pruebas2.setAdapter(rvAdapter);
+                        rvOther.setLayoutManager(mLayoutManager);
+                        rvOther.setItemAnimator(new DefaultItemAnimator());
+                        rvOther.setAdapter(rvAdapter);
 
                         rvAdapter.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvRecyclerView.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvRecyclerView.getChildAdapterPosition(view)).getOverview());
+                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
                                 startActivity(miIntent);
 
                             }
@@ -259,9 +263,9 @@ public class index extends AppCompatActivity {
     }
 
     private void inicializarComponentes(){
-        rvRecyclerView=findViewById(R.id.rvRecyclerViewPopular);
-        pruebas=findViewById(R.id.rv2);
-        pruebas2=findViewById(R.id.rv3);
+        rvPopular =findViewById(R.id.rvRecyclerViewPopular);
+        rvTop =findViewById(R.id.rv2);
+        rvOther =findViewById(R.id.rv3);
     }
 
     //Añadir una pelicula a FAVORITOS

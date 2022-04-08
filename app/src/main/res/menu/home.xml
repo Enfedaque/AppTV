@@ -14,4 +14,9 @@
         android:iconTint="#000000"
         android:title="map"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/verFav"
+        android:icon="@drawable/corazon"
+        android:iconTint="#000000"
+        app:showAsAction="always" />
 </menu>

@@ -65,8 +65,8 @@ public class recyclerViewAdapterPOPULAR
                 peliculas miPeli=listadoPeliculas.get(position);
                 baseDeDatos database= Room.databaseBuilder(view.getContext(), baseDeDatos.class,
                         "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-                database.peliculaDAO().insert(new favoritos(String.valueOf(miPeli.getId()), miPelicula.getOriginal_title(),
-                        GlobalVars.getIdUsuario()));
+                database.peliculaDAO().insert(new favoritos(miPeli.getOriginal_title(), miPeli.getPoster_path(),
+                        String.valueOf(miPeli.getId()), GlobalVars.getIdUsuario()));
                 Toast.makeText(view.getContext(), "Añadida a FAVORITOS", Toast.LENGTH_LONG).show();
             }
         });
