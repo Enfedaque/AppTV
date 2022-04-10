@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +36,7 @@ public class videos extends AppCompatActivity {
     TextView popularity;
     TextView fechaPrincipal;
     TextView overviewPrincipal;
-    TextView otrosPrincipal;
+    Button btnCine;
 
     Bundle datos;
 
@@ -86,6 +88,7 @@ public class videos extends AppCompatActivity {
         popularity =findViewById(R.id.generoPrincipal);
         fechaPrincipal=findViewById(R.id.fechaPrincipal);
         overviewPrincipal=findViewById(R.id.overviewPrincipal);
+        btnCine=findViewById(R.id.btnCine);
     }
 
     //MEnu superior àra volver al index o recargarlo
@@ -100,10 +103,6 @@ public class videos extends AppCompatActivity {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
             Intent miIntent=new Intent(this, index.class);
-            startActivity(miIntent);
-            return true;
-        }else if(item.getItemId() == R.id.fondoMapa){
-            Intent miIntent=new Intent(this, Mapa.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
@@ -166,5 +165,11 @@ public class videos extends AppCompatActivity {
                 youTubePlayer.loadVideo(clave, 0);
             }
         });
+    }
+
+    //Metodo que me manda a ver el cine donde se pone la pelicula
+    public void abrirMapaCine(View view){
+        Intent miIntent=new Intent(this, Mapa.class);
+        startActivity(miIntent);
     }
 }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -44,7 +45,7 @@ public class verFavoritos extends AppCompatActivity {
         foto=findViewById(R.id.fotoFav);
 
 
-        LV_Adapter =new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
+        LV_Adapter =new ArrayAdapter<>(this, R.layout.adaptador_listview_fav,
                 titulos);
 
         lvPeliculasFav=findViewById(R.id.lvFavs);
@@ -71,7 +72,10 @@ public class verFavoritos extends AppCompatActivity {
         titulos.clear();
         baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
                 "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
+
         titulos.addAll(database.peliculaDAO().findmiPeliculaById(GlobalVars.getIdUsuario()));
+
+        LV_Adapter.notifyDataSetChanged();
     }
 
     //MEnu superior àra volver al index o recargarlo
@@ -113,7 +117,26 @@ public class verFavoritos extends AppCompatActivity {
 
         //Opcion de mostrar la informacion
         if (item.getItemId() == R.id.deleteFav) {
+            String titulo=(String) lvPeliculasFav.getItemAtPosition(info.position);
+            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
+                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
+            AlertDialog.Builder alert=new AlertDialog.Builder(this);
+            alert.setMessage("¿Seguro quieres eliminar ' " + titulo + " ' de favoritos?");
+            alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    database.peliculaDAO().deleteAllByMiPeliculaAndIdUsuario(titulo, GlobalVars.getIdUsuario());
+                    cargarBBDDenLista();
+                }
+            });
+            alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    cargarBBDDenLista();
+                }
+            });
+            alert.show();
 
             return true;
         }
