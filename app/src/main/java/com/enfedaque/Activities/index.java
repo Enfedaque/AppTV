@@ -80,10 +80,6 @@ public class index extends AppCompatActivity {
             Intent miIntent=new Intent(this, index.class);
             startActivity(miIntent);
             return true;
-        }else if(item.getItemId() == R.id.fondoMapa){
-            Intent miIntent=new Intent(this, Mapa.class);
-            startActivity(miIntent);
-            return true;
         }else if(item.getItemId() == R.id.verFav){
             Intent miIntent=new Intent(this, verFavoritos.class);
             startActivity(miIntent);

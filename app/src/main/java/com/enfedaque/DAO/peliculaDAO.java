@@ -33,4 +33,8 @@ public interface peliculaDAO {
     @Query("SELECT foto FROM favoritos where miPelicula= :miPelicula")
     String findfotoBymiPelicula(String miPelicula);
 
+    //Eliminar una pelicula de favoritos
+    @Query("DELETE FROM favoritos where miPelicula= :miPelicula and idUsuario= :idUsuario")
+    void deleteAllByMiPeliculaAndIdUsuario(String miPelicula, long idUsuario);
+
 }

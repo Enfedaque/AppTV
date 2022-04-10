@@ -9,12 +9,6 @@
         android:visible="true"
         app:showAsAction="always" />
     <item
-        android:id="@+id/fondoMapa"
-        android:icon="@android:drawable/ic_dialog_map"
-        android:iconTint="#000000"
-        android:title="map"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/verFav"
         android:icon="@drawable/corazon"
         android:iconTint="#000000"
