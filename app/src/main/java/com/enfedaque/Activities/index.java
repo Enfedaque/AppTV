@@ -1,5 +1,6 @@
 package com.enfedaque.Activities;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +21,23 @@ import com.enfedaque.adaptadores.recyclerViewAdapterPOPULAR;
 import com.enfedaque.domain.peliculas;
 import com.enfedaque.domain.respuestaPeliculas;
 import com.enfedaque.API.PeliculasAPI;
+import com.enfedaque.domain.respuestaUpcoming;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observer;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 
 public class index extends AppCompatActivity {
 
@@ -49,6 +60,13 @@ public class index extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        TaskVideos taskVideos=new TaskVideos();
+        taskVideos.execute();
+    }
+
     //Hilo que me va a lanzar la busqueda en la API
     class TaskVideos extends AsyncTask<Integer, Void, String> {
 
@@ -61,7 +79,6 @@ public class index extends AppCompatActivity {
             }catch (Exception ex){
                 ex.printStackTrace();
             }
-
             return null;
         }
     }
@@ -88,172 +105,114 @@ public class index extends AppCompatActivity {
         return true;
     }
 
-    //Obtener datos de la API
+    //POPULARES
     private void findAll(){
         Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
-        peliculasAPI =retrofit.create(PeliculasAPI.class);
-        Call<respuestaPeliculas> call=peliculasAPI.findAllPopular();
-
-        call.enqueue(new Callback<respuestaPeliculas>() {
-            @Override
-            public void onResponse(Call<respuestaPeliculas> call, Response<respuestaPeliculas> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        respuestaPeliculas miRespuesta=response.body();
-
-                        List<peliculas> lista=miRespuesta.getResults();
-                        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
-                        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
-                                RecyclerView.HORIZONTAL, false);
-                        rvPopular.setLayoutManager(mLayoutManager);
-                        rvPopular.setItemAnimator(new DefaultItemAnimator());
-                        rvPopular.setAdapter(rvAdapter);
-                        rvAdapter.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-
-                                Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
-                                startActivity(miIntent);
-
-                            }
-                        });
-
-
-                    }else{
-                        Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                        System.out.println(response.raw());
-                    }
-                }catch (Exception ex){
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<respuestaPeliculas> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                System.out.println(t.getMessage());
-            }
-        });
+        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
+        peliculasAPI.findAllPopular()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(respuestaPeliculas -> mostrarAllPopular(respuestaPeliculas.getResults()));
     }
 
+    //TOP RATED
     private void findAllTopRated(){
         Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
-        peliculasAPI =retrofit.create(PeliculasAPI.class);
-        Call<respuestaPeliculas> call=peliculasAPI.findAllTopRated();
+        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
+        peliculasAPI.findAllTopRated()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(respuestaPeliculas -> mostrarTopRated(respuestaPeliculas.getResults()));
+    }
 
-        call.enqueue(new Callback<respuestaPeliculas>() {
+    //OTHERS
+    private void findAllOther(){
+        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .build();
+
+        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
+        peliculasAPI.findOthers()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(respuestaUpcoming -> mostrarUpcoming(respuestaUpcoming.getResults()));
+    }
+
+    //Mostrar populares
+    private void mostrarAllPopular(List<peliculas> lista){
+        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
+        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.HORIZONTAL, false);
+        rvPopular.setLayoutManager(mLayoutManager);
+        rvPopular.setItemAnimator(new DefaultItemAnimator());
+        rvPopular.setAdapter(rvAdapter);
+        rvAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<respuestaPeliculas> call, Response<respuestaPeliculas> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        respuestaPeliculas miRespuesta=response.body();
+            public void onClick(View view) {
 
-                        List<peliculas> lista=miRespuesta.getResults();
-                        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
-                        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
-                                RecyclerView.HORIZONTAL, false);
-                        rvTop.setLayoutManager(mLayoutManager);
-                        rvTop.setItemAnimator(new DefaultItemAnimator());
-                        rvTop.setAdapter(rvAdapter);
+                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
+                startActivity(miIntent);
 
-                        rvAdapter.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
-                                startActivity(miIntent);
-
-                            }
-                        });
-
-
-                    }else{
-                        Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                        System.out.println(response.raw());
-                    }
-                }catch (Exception ex){
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<respuestaPeliculas> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                System.out.println(t.getMessage());
             }
         });
     }
 
-    private void findAllOther(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+    //Mostrar upComing
+    private void mostrarUpcoming(List<peliculas> listado){
+        List<peliculas> lista=listado;
+        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
+        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.HORIZONTAL, false);
+        rvOther.setLayoutManager(mLayoutManager);
+        rvOther.setItemAnimator(new DefaultItemAnimator());
+        rvOther.setAdapter(rvAdapter);
 
-        peliculasAPI =retrofit.create(PeliculasAPI.class);
-        Call<respuestaPeliculas> call=peliculasAPI.findOthers();
-
-        call.enqueue(new Callback<respuestaPeliculas>() {
+        rvAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call<respuestaPeliculas> call, Response<respuestaPeliculas> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        respuestaPeliculas miRespuesta=response.body();
-
-                        List<peliculas> lista=miRespuesta.getResults();
-                        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
-                        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
-                                RecyclerView.HORIZONTAL, false);
-                        rvOther.setLayoutManager(mLayoutManager);
-                        rvOther.setItemAnimator(new DefaultItemAnimator());
-                        rvOther.setAdapter(rvAdapter);
-
-                        rvAdapter.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent miIntent=new Intent(getApplicationContext(), videos.class);
-                                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
-                                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
-                                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
-                                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
-                                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
-                                startActivity(miIntent);
-
-                            }
-
-                        });
-
-
-                    }else{
-                        Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                        System.out.println(response.raw());
-                    }
-                }catch (Exception ex){
-
-                }
+            public void onClick(View view) {
+                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
+                startActivity(miIntent);
 
             }
+        });
+    }
 
+    //Mostrar topRated
+    private void mostrarTopRated(List<peliculas> lista){
+        rvAdapter=new recyclerViewAdapterPOPULAR(lista);
+        RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
+                RecyclerView.HORIZONTAL, false);
+        rvTop.setLayoutManager(mLayoutManager);
+        rvTop.setItemAnimator(new DefaultItemAnimator());
+        rvTop.setAdapter(rvAdapter);
+
+        rvAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFailure(Call<respuestaPeliculas> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR" , Toast.LENGTH_LONG).show();
-                System.out.println(t.getMessage());
+            public void onClick(View view) {
+                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
+                miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
+                miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
+                miIntent.putExtra("Popularity", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getVote_count()));
+                miIntent.putExtra("Overview", lista.get(rvPopular.getChildAdapterPosition(view)).getOverview());
+                startActivity(miIntent);
+
             }
         });
     }
@@ -266,7 +225,6 @@ public class index extends AppCompatActivity {
 
     //Añadir una pelicula a FAVORITOS
     public void marcarFavorito(View view){
-
         Toast.makeText(getApplicationContext(), "Pelicula añadida a FAVORITOS" , Toast.LENGTH_LONG).show();
     }
 

@@ -56,12 +56,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
     private GoogleMap miMapa;
     private LocationManager locationManager;
     private LocationProvider locationProvider;
-    /*LatLng cine1;
-    LatLng cine2;
-    LatLng cine3;
-    LatLng cine4;
-    LatLng cine5;
-    LatLng cine6;*/
 
     com.google.maps.model.LatLng cine1;
     com.google.maps.model.LatLng cine2;
