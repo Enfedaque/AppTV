@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -99,6 +100,10 @@ public class index extends AppCompatActivity {
             return true;
         }else if(item.getItemId() == R.id.verFav){
             Intent miIntent=new Intent(this, verFavoritos.class);
+            startActivity(miIntent);
+            return true;
+        }else if(item.getItemId() == R.id.pref){
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }

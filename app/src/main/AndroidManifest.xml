@@ -30,6 +30,9 @@
             android:name=".Activities.videos"
             android:exported="false" />
         <activity
+            android:name=".Activities.preferencias"
+            android:exported="false" />
+        <activity
             android:name=".Activities.index"
             android:exported="false" />
         <activity

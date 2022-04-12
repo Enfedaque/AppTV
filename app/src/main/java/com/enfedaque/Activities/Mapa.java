@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -123,38 +124,6 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
         locationProvider=locationManager.getProvider(locationManager.GPS_PROVIDER);
         locationManager.requestLocationUpdates(locationProvider.getName(), 4000, 200, this);
 
-        crearMarkers();
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine1.lat, cine1.lng))
-                .title("ZARAGOZA")))
-                .setSnippet("Cine de la zona centrica de la localidad. ENTRADA GRATUITA");
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine2.lat, cine2.lng))
-                .title("MADRID")))
-                .setSnippet("Uno de los principales cines de España");
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine3.lat, cine3.lng))
-                .title("BARCELONA")))
-                .setSnippet("Mas antiguo de la provincia");
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine4.lat, cine4.lng))
-                .title("SEVILLA")))
-                .setSnippet("Cine al aire libre");
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine5.lat, cine5.lng))
-                .title("SANTIAGO DE COMPOSTELA")))
-                .setSnippet("Famoso por apariciones en RRSS");
-
-        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
-                .position(new LatLng(cine6.lat, cine6.lng))
-                .title("VALENCIA")))
-                .setSnippet("Acogedor y romantico");
-
 
         AlertDialog.Builder dialogo=new AlertDialog.Builder(this);
         dialogo.setMessage("Seleccione SU PUNTO DE PARTIDA en el mapa con un click");
@@ -240,7 +209,39 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
         Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
                 .position(new LatLng(puntoPartida.lat, puntoPartida.lng))
                 .title("INICIO")))
-                .setSnippet("Punto de partida desde el que dirigirse al cine");
+                .setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+        crearMarkers();
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine1.lat, cine1.lng))
+                .title("ZARAGOZA")))
+                .setSnippet("Cine de la zona centrica de la localidad. ENTRADA GRATUITA");
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine2.lat, cine2.lng))
+                .title("MADRID")))
+                .setSnippet("Uno de los principales cines de España");
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine3.lat, cine3.lng))
+                .title("BARCELONA")))
+                .setSnippet("Mas antiguo de la provincia");
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine4.lat, cine4.lng))
+                .title("SEVILLA")))
+                .setSnippet("Cine al aire libre");
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine5.lat, cine5.lng))
+                .title("SANTIAGO DE COMPOSTELA")))
+                .setSnippet("Famoso por apariciones en RRSS");
+
+        Objects.requireNonNull(miMapa.addMarker(new MarkerOptions()
+                .position(new LatLng(cine6.lat, cine6.lng))
+                .title("VALENCIA")))
+                .setSnippet("Acogedor y romantico");
 
         Toast.makeText(this, "Seleccione EL CINE", Toast.LENGTH_LONG).show();
 
