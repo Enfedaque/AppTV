@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class videos extends AppCompatActivity {
+public class videosView extends AppCompatActivity {
 
     YouTubePlayerView videoPrincipal;
     TextView tituloPrincipal;
@@ -116,15 +116,15 @@ public class videos extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
-            Intent miIntent=new Intent(this, index.class);
+            Intent miIntent=new Intent(this, indexView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
-            Intent miIntent=new Intent(this, verFavoritos.class);
+            Intent miIntent=new Intent(this, verFavoritosView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferencias.class);
+            Intent miIntent=new Intent(this, preferenciasView.class);
             startActivity(miIntent);
             return true;
         }
@@ -187,7 +187,7 @@ public class videos extends AppCompatActivity {
 
     //Metodo que me manda a ver el cine donde se pone la pelicula
     public void abrirMapaCine(View view){
-        Intent miIntent=new Intent(this, Mapa.class);
+        Intent miIntent=new Intent(this, MapaView.class);
         startActivity(miIntent);
     }
 

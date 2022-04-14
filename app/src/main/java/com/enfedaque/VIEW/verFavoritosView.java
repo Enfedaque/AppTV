@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -21,8 +21,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.enfedaque.BBDD.baseDeDatos;
+import com.enfedaque.CONTRACT.verFavoritosContract;
+import com.enfedaque.PRESENTER.verFavoritosPresenter;
 import com.enfedaque.R;
 import com.enfedaque.UTILS.GlobalVars;
 import com.squareup.picasso.Picasso;
@@ -30,7 +33,9 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class verFavoritos extends AppCompatActivity {
+public class verFavoritosView extends AppCompatActivity implements verFavoritosContract.View {
+
+    private verFavoritosPresenter presenter;
 
     private ArrayAdapter<String> LV_Adapter;
     private List<String> titulos;
@@ -63,9 +68,12 @@ public class verFavoritos extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String titulo=(String) lvPeliculasFav.getItemAtPosition(i);
-                cargarFoto(titulo);
+                presenter.cargarFoto(titulo);
             }
         });
+
+        presenter=new verFavoritosPresenter(this);
+        presenter.cargarTitulos();
 
         detectarPreferencias();
     }
@@ -73,25 +81,15 @@ public class verFavoritos extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        cargarBBDDenLista();
+        presenter.cargarTitulos();
         detectarPreferencias();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        cargarBBDDenLista();
+        presenter.cargarTitulos();
         detectarPreferencias();
-    }
-
-    private void cargarBBDDenLista(){
-        titulos.clear();
-        baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
-                "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-        titulos.addAll(database.peliculaDAO().findmiPeliculaById(GlobalVars.getIdUsuario()));
-
-        LV_Adapter.notifyDataSetChanged();
     }
 
     //MEnu superior àra volver al index o recargarlo
@@ -105,15 +103,15 @@ public class verFavoritos extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
-            Intent miIntent=new Intent(this, index.class);
+            Intent miIntent=new Intent(this, indexView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferencias.class);
+            Intent miIntent=new Intent(this, preferenciasView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
-            Intent miIntent=new Intent(this, verFavoritos.class);
+            Intent miIntent=new Intent(this, verFavoritosView.class);
             startActivity(miIntent);
             return true;
         }
@@ -134,22 +132,23 @@ public class verFavoritos extends AppCompatActivity {
         //Opcion de mostrar la informacion
         if (item.getItemId() == R.id.deleteFav) {
             String titulo=(String) lvPeliculasFav.getItemAtPosition(info.position);
-            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
-                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
             AlertDialog.Builder alert=new AlertDialog.Builder(this);
             alert.setMessage("¿Seguro quieres eliminar ' " + titulo + " ' de favoritos?");
             alert.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    database.peliculaDAO().deleteAllByMiPeliculaAndIdUsuario(titulo, GlobalVars.getIdUsuario());
-                    cargarBBDDenLista();
+                    if (presenter.eliminarPelicula(titulo, GlobalVars.idUsuario)){
+                        eliminarPelicula();
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             alert.setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    cargarBBDDenLista();
+                   presenter.cargarTitulos();
                 }
             });
             alert.show();
@@ -158,22 +157,6 @@ public class verFavoritos extends AppCompatActivity {
         }
 
         return false;
-    }
-
-    private void cargarFoto(String miPelicula){
-
-        LayoutInflater video_alert=LayoutInflater.from(verFavoritos.this);
-        vista=video_alert.inflate(R.layout.foto_favoritos, null);
-
-        baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
-                "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-        String poster=database.peliculaDAO().findfotoBymiPelicula(miPelicula);
-
-        Picasso.get().load("https://image.tmdb.org/t/p/w500/" + poster).into((ImageView) vista.findViewById(R.id.fotoFav));
-
-        AlertDialog.Builder dialogo=new AlertDialog.Builder(this);
-        dialogo.setView(vista);
-        dialogo.show();
     }
 
     private void detectarPreferencias(){
@@ -187,4 +170,28 @@ public class verFavoritos extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void cargarFavoritos(List<String> listaFavoritos) {
+        titulos.clear();
+        titulos.addAll(listaFavoritos);
+        LV_Adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void cargarFotoPelicula(String foto) {
+        LayoutInflater video_alert=LayoutInflater.from(verFavoritosView.this);
+        vista=video_alert.inflate(R.layout.foto_favoritos, null);
+
+        Picasso.get().load("https://image.tmdb.org/t/p/w500/" + foto).into((ImageView) vista.findViewById(R.id.fotoFav));
+
+        AlertDialog.Builder dialogo=new AlertDialog.Builder(this);
+        dialogo.setView(vista);
+        dialogo.show();
+    }
+
+    @Override
+    public void eliminarPelicula() {
+        presenter.cargarTitulos();
+        Toast.makeText(getApplicationContext(), "Pelicula eliminada", Toast.LENGTH_SHORT).show();
+    }
 }

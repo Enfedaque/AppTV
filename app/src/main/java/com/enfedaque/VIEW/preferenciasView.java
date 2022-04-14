@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager;
 
 import com.enfedaque.R;
 
-public class preferencias extends PreferenceActivity {
+public class preferenciasView extends PreferenceActivity {
 
 
     @Override protected void onCreate(Bundle savedInstanceState) {

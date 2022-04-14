@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -11,21 +11,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
 import com.enfedaque.domain.usuario;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class registrarse extends AppCompatActivity {
+public class registrarseView extends AppCompatActivity {
 
     private EditText nuevoUsuario;
     private EditText nuevoEmail;
@@ -82,7 +72,7 @@ public class registrarse extends AppCompatActivity {
                     "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
             database.usuarioDAO().insert(usuario);
             Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_LONG).show();
-            Intent miIntent=new Intent(this, Login.class);
+            Intent miIntent=new Intent(this, LoginView.class);
             startActivity(miIntent);
         }
     }

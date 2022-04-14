@@ -16,10 +16,10 @@
         android:theme="@style/Theme.AppTV"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Activities.verFavoritos"
+            android:name=".VIEW.verFavoritosView"
             android:exported="false" />
         <activity
-            android:name=".Activities.Mapa"
+            android:name=".VIEW.MapaView"
             android:exported="false" />
 
         <meta-data
@@ -27,19 +27,19 @@
             android:value="AIzaSyCLBgnBFBMy3SmyEmGUFF-RIt8UE9PAwpo" />
 
         <activity
-            android:name=".Activities.videos"
+            android:name=".VIEW.videosView"
             android:exported="false" />
         <activity
-            android:name=".Activities.preferencias"
+            android:name=".VIEW.preferenciasView"
             android:exported="false" />
         <activity
-            android:name=".Activities.index"
+            android:name=".VIEW.indexView"
             android:exported="false" />
         <activity
-            android:name=".Activities.registrarse"
+            android:name=".VIEW.registrarseView"
             android:exported="false" />
         <activity
-            android:name=".Activities.Login"
+            android:name=".VIEW.LoginView"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
