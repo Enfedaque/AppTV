@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
@@ -15,22 +15,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.R;
 import com.enfedaque.UTILS.GlobalVars;
-import com.enfedaque.domain.usuario;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class Login extends AppCompatActivity {
+public class LoginView extends AppCompatActivity {
 
     private EditText etEmail;
     private EditText etPassword;
@@ -98,7 +87,7 @@ public class Login extends AppCompatActivity {
                         GlobalVars.setPass(pass);
 
                         Toast.makeText(getApplicationContext(), "Bienvenido de nuevo " + email, Toast.LENGTH_LONG).show();
-                        Intent miIntent=new Intent(this, index.class);
+                        Intent miIntent=new Intent(this, indexView.class);
                         startActivity(miIntent);
                     }else{
                         Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
@@ -117,7 +106,7 @@ public class Login extends AppCompatActivity {
 
     //Crear nuevo cuenta de usuario
     public void crearCuenta(){
-        Intent miIntent=new Intent(getApplicationContext(), registrarse.class);
+        Intent miIntent=new Intent(getApplicationContext(), registrarseView.class);
         startActivity(miIntent);
     }
 

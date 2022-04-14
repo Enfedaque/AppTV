@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +31,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class index extends AppCompatActivity {
+public class indexView extends AppCompatActivity {
 
     private RecyclerView rvPopular;
     private recyclerViewAdapterPOPULAR rvAdapter;
@@ -95,15 +93,15 @@ public class index extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
-            Intent miIntent=new Intent(this, index.class);
+            Intent miIntent=new Intent(this, indexView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
-            Intent miIntent=new Intent(this, verFavoritos.class);
+            Intent miIntent=new Intent(this, verFavoritosView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferencias.class);
+            Intent miIntent=new Intent(this, preferenciasView.class);
             startActivity(miIntent);
             return true;
         }
@@ -161,7 +159,7 @@ public class index extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                Intent miIntent=new Intent(getApplicationContext(), videosView.class);
                 miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
                 miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
                 miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
@@ -186,7 +184,7 @@ public class index extends AppCompatActivity {
         rvAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                Intent miIntent=new Intent(getApplicationContext(), videosView.class);
                 miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
                 miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
                 miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());
@@ -210,7 +208,7 @@ public class index extends AppCompatActivity {
         rvAdapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent miIntent=new Intent(getApplicationContext(), videos.class);
+                Intent miIntent=new Intent(getApplicationContext(), videosView.class);
                 miIntent.putExtra("ID", String.valueOf(lista.get(rvPopular.getChildAdapterPosition(view)).getId()));
                 miIntent.putExtra("Titulo", lista.get(rvPopular.getChildAdapterPosition(view)).getOriginal_title());
                 miIntent.putExtra("Fecha", lista.get(rvPopular.getChildAdapterPosition(view)).getRelease_date());

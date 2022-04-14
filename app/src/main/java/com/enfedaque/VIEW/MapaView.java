@@ -1,4 +1,4 @@
-package com.enfedaque.Activities;
+package com.enfedaque.VIEW;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -16,10 +16,8 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.enfedaque.R;
@@ -28,7 +26,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -46,11 +43,10 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
+public class MapaView extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, LocationListener {
 
 
@@ -92,11 +88,11 @@ public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         //Si toca la casa lo envio al inicio
         if(item.getItemId() == R.id.house){
-            Intent miIntent=new Intent(this, index.class);
+            Intent miIntent=new Intent(this, indexView.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
-            Intent miIntent=new Intent(this, verFavoritos.class);
+            Intent miIntent=new Intent(this, verFavoritosView.class);
             startActivity(miIntent);
             return true;
         }
