@@ -12,10 +12,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.enfedaque.BBDD.baseDeDatos;
+import com.enfedaque.CONTRACT.registrarseContract;
+import com.enfedaque.PRESENTER.registrarsePresenter;
 import com.enfedaque.R;
 import com.enfedaque.domain.usuario;
 
-public class registrarseView extends AppCompatActivity {
+public class registrarseView extends AppCompatActivity implements registrarseContract.View{
 
     private EditText nuevoUsuario;
     private EditText nuevoEmail;
@@ -26,15 +28,20 @@ public class registrarseView extends AppCompatActivity {
 
     private usuario usuario;
 
+    private registrarsePresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registrarse);
         inicializarComponentes();
 
+        presenter=new registrarsePresenter(this);
+
         btnLimpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 limpiarFormulario();
             }
         });
@@ -42,6 +49,7 @@ public class registrarseView extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 recogerDatos();
             }
         });
@@ -68,12 +76,12 @@ public class registrarseView extends AppCompatActivity {
         }else{
             usuario=new usuario(nombreUsuario, email, pass);
 
-            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
-                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-            database.usuarioDAO().insert(usuario);
-            Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_LONG).show();
-            Intent miIntent=new Intent(this, LoginView.class);
-            startActivity(miIntent);
+            if (presenter.registrar(usuario)){
+                registrar();
+            }else{
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 
@@ -86,4 +94,10 @@ public class registrarseView extends AppCompatActivity {
     }
 
 
+    @Override
+    public void registrar() {
+        Toast.makeText(getApplicationContext(), "Usuario registrado", Toast.LENGTH_LONG).show();
+        Intent miIntent=new Intent(this, LoginView.class);
+        startActivity(miIntent);
+    }
 }

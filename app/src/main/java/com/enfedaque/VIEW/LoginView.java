@@ -16,10 +16,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.enfedaque.BBDD.baseDeDatos;
+import com.enfedaque.CONTRACT.loginContract;
+import com.enfedaque.PRESENTER.loginPresenter;
 import com.enfedaque.R;
 import com.enfedaque.UTILS.GlobalVars;
 
-public class LoginView extends AppCompatActivity {
+public class LoginView extends AppCompatActivity implements loginContract.View{
 
     private EditText etEmail;
     private EditText etPassword;
@@ -27,11 +29,16 @@ public class LoginView extends AppCompatActivity {
     private Button btnCrearCuenta;
     private LinearLayout loginLayout;
 
+    private loginPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         inicializarComponentes();
+
+        presenter=new loginPresenter(this);
+
         detectarPreferencias();
 
         //Listener del login
@@ -73,31 +80,7 @@ public class LoginView extends AppCompatActivity {
         String pass=etPassword.getText().toString();
 
         if (!email.equalsIgnoreCase("") && !pass.equalsIgnoreCase("")){
-            baseDeDatos database= Room.databaseBuilder(getApplicationContext(), baseDeDatos.class,
-                    "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
-
-            try{
-                String password= database.usuarioDAO().findByEmail(email);
-                long Id= database.usuarioDAO().findById(email);
-                if (password!=null){
-                    if (password.equalsIgnoreCase(pass)){
-
-                        GlobalVars.setIdUsuario(Id);
-                        GlobalVars.setEmail(email);
-                        GlobalVars.setPass(pass);
-
-                        Toast.makeText(getApplicationContext(), "Bienvenido de nuevo " + email, Toast.LENGTH_LONG).show();
-                        Intent miIntent=new Intent(this, indexView.class);
-                        startActivity(miIntent);
-                    }else{
-                        Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
-                    }
-                }
-
-            }catch (SQLiteException e){
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
-            }
+            presenter.getPassword(email, pass);
 
         }else{
             Toast.makeText(getApplicationContext(), "Rellene todos los campos", Toast.LENGTH_LONG).show();
@@ -125,5 +108,29 @@ public class LoginView extends AppCompatActivity {
             etPassword.setTextColor(Color.WHITE);
         }
     }
+
+    @Override
+    public String paswordOk(String email) {
+        Toast.makeText(getApplicationContext(), "Bienvenido de nuevo " + email, Toast.LENGTH_LONG).show();
+        Intent miIntent=new Intent(this, indexView.class);
+        startActivity(miIntent);
+        return null;
+    }
+
+    @Override
+    public String paswordCancel() {
+        Toast.makeText(getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+        return null;
+    }
+
+    @Override
+    public void guardarVariables(String email, String pass) {
+        long Id= presenter.getIdUsuario(email);
+
+        GlobalVars.setIdUsuario(Id);
+        GlobalVars.setEmail(email);
+        GlobalVars.setPass(pass);
+    }
+
 
 }
