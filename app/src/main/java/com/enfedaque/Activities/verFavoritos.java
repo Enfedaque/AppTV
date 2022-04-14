@@ -3,10 +3,14 @@ package com.enfedaque.Activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -35,11 +39,13 @@ public class verFavoritos extends AppCompatActivity {
     View vista;
     ImageView foto;
 
+    private ConstraintLayout favLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_favoritos);
+        favLayout=findViewById(R.id.favLayout);
 
         titulos=new ArrayList<>();
         foto=findViewById(R.id.fotoFav);
@@ -60,12 +66,22 @@ public class verFavoritos extends AppCompatActivity {
                 cargarFoto(titulo);
             }
         });
+
+        detectarPreferencias();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         cargarBBDDenLista();
+        detectarPreferencias();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cargarBBDDenLista();
+        detectarPreferencias();
     }
 
     private void cargarBBDDenLista(){
@@ -92,8 +108,8 @@ public class verFavoritos extends AppCompatActivity {
             Intent miIntent=new Intent(this, index.class);
             startActivity(miIntent);
             return true;
-        }else if(item.getItemId() == R.id.fondoMapa){
-            Intent miIntent=new Intent(this, Mapa.class);
+        }else if(item.getItemId() == R.id.pref){
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
@@ -158,6 +174,17 @@ public class verFavoritos extends AppCompatActivity {
         AlertDialog.Builder dialogo=new AlertDialog.Builder(this);
         dialogo.setView(vista);
         dialogo.show();
+    }
+
+    private void detectarPreferencias(){
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean cbTemas = preferencias.getBoolean("cbTemas", false);
+        if (cbTemas){
+            favLayout.setBackgroundColor(Color.LTGRAY);
+        }else{
+            favLayout.setBackgroundColor(Color.BLACK);
+        }
     }
 
 }

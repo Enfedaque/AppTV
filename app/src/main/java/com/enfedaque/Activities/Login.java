@@ -1,14 +1,18 @@
 package com.enfedaque.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -32,12 +36,14 @@ public class Login extends AppCompatActivity {
     private EditText etPassword;
     private Button btnLogin;
     private Button btnCrearCuenta;
+    private LinearLayout loginLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         inicializarComponentes();
+        detectarPreferencias();
 
         //Listener del login
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -58,11 +64,18 @@ public class Login extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        detectarPreferencias();
+    }
+
     private void inicializarComponentes(){
         etEmail=findViewById(R.id.etEmail);
         etPassword=findViewById(R.id.etPassword);
         btnLogin=findViewById(R.id.btnLogin);
         btnCrearCuenta=findViewById(R.id.btnCrearCuenta);
+        loginLayout=findViewById(R.id.loginLayout);
     }
 
     //Valido si ya hay cuenta con esos datos
@@ -108,5 +121,20 @@ public class Login extends AppCompatActivity {
         startActivity(miIntent);
     }
 
+    //Detectar cambio de las preferencias
+    private void detectarPreferencias(){
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean cbTemas = preferencias.getBoolean("cbTemas", false);
+        if (cbTemas){
+            loginLayout.setBackgroundColor(Color.LTGRAY);
+            etEmail.setTextColor(Color.BLACK);
+            etPassword.setTextColor(Color.BLACK);
+        }else{
+            loginLayout.setBackgroundColor(Color.BLACK);
+            etEmail.setTextColor(Color.WHITE);
+            etPassword.setTextColor(Color.WHITE);
+        }
+    }
 
 }

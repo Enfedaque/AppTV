@@ -2,14 +2,18 @@ package com.enfedaque.Activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,12 +44,15 @@ public class videos extends AppCompatActivity {
 
     Bundle datos;
 
+    private LinearLayout videosLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_videos);
 
         iniciarComponentes();
+        detectarPreferencias();
 
         datos=getIntent().getExtras();
         tituloPrincipal.setText(datos.getString("Titulo").toUpperCase());
@@ -55,6 +62,12 @@ public class videos extends AppCompatActivity {
 
         TaskVideos taskVideos=new TaskVideos();
         taskVideos.execute(datos.getString("ID"));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        detectarPreferencias();
     }
 
     //Hilo que me va a lanzar la busqueda en la API
@@ -89,6 +102,7 @@ public class videos extends AppCompatActivity {
         fechaPrincipal=findViewById(R.id.fechaPrincipal);
         overviewPrincipal=findViewById(R.id.overviewPrincipal);
         btnCine=findViewById(R.id.btnCine);
+        videosLayout=findViewById(R.id.videosLayout);
     }
 
     //MEnu superior àra volver al index o recargarlo
@@ -107,6 +121,10 @@ public class videos extends AppCompatActivity {
             return true;
         }else if(item.getItemId() == R.id.verFav){
             Intent miIntent=new Intent(this, verFavoritos.class);
+            startActivity(miIntent);
+            return true;
+        }else if(item.getItemId() == R.id.pref){
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }
@@ -171,5 +189,37 @@ public class videos extends AppCompatActivity {
     public void abrirMapaCine(View view){
         Intent miIntent=new Intent(this, Mapa.class);
         startActivity(miIntent);
+    }
+
+    //Detectar cambio de las preferencias
+    private void detectarPreferencias(){
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean cbTemas = preferencias.getBoolean("cbTemas", false);
+        boolean cbLetras = preferencias.getBoolean("cbLetras", false);
+        if (cbTemas){
+            videosLayout.setBackgroundColor(Color.LTGRAY);
+            tituloPrincipal.setTextColor(Color.BLACK);
+            popularity.setTextColor(Color.BLACK);
+            fechaPrincipal.setTextColor(Color.BLACK);
+            overviewPrincipal.setTextColor(Color.BLACK);
+        }else{
+            videosLayout.setBackgroundColor(Color.BLACK);
+            tituloPrincipal.setTextColor(Color.BLUE);
+            popularity.setTextColor(Color.BLUE);
+            fechaPrincipal.setTextColor(Color.BLUE);
+            overviewPrincipal.setTextColor(Color.BLUE);
+        }
+        if (cbLetras) {
+            tituloPrincipal.setText(tituloPrincipal.getText().toString().toUpperCase());
+            popularity.setText(popularity.getText().toString().toUpperCase());
+            fechaPrincipal.setText(fechaPrincipal.getText().toString().toUpperCase());
+            overviewPrincipal.setText(overviewPrincipal.getText().toString().toUpperCase());
+        }else{
+            tituloPrincipal.setText(tituloPrincipal.getText().toString().toLowerCase());
+            popularity.setText(popularity.getText().toString().toLowerCase());
+            fechaPrincipal.setText(fechaPrincipal.getText().toString().toLowerCase());
+            overviewPrincipal.setText(overviewPrincipal.getText().toString().toLowerCase());
+        }
     }
 }

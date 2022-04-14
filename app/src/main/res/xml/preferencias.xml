@@ -3,17 +3,16 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="cbSonido"
-        android:summary="Desactivar sonidos de la aplicacion, los videos y demas recursos no se escucharan"
-        android:title="Desactivar sonidos" />
+        android:summary="Cambiar el sonido que hace el boton al añadir una pelicula a favoritos"
+        android:title="Sonidos boton favoritos" />
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="cbTemas"
-        android:summary="Cambiar para que los colores de la aplicacion sean colores claros"
-        android:title="Tema claro" />
-    <ListPreference
-        android:entries="@array/tipograficos"
-        android:entryValues="@array/tiposgraficosvalores"
-        android:key="lista"
-        android:summary="Se escoge la representación gráfica"
-        android:title="Tipo de gráficos" />
+        android:summary="Cambiar el tema de la aplicacion a un tema oscuro o oscuro"
+        android:title="Temas" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="cbLetras"
+        android:summary="Cambiar el contenido de texto de la aplicacion a un determinado tipo de letra"
+        android:title="Máyusculas / Minusculas" />
 </PreferenceScreen>
