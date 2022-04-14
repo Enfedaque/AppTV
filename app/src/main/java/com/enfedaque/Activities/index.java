@@ -1,44 +1,37 @@
 package com.enfedaque.Activities;
 
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.enfedaque.R;
 import com.enfedaque.adaptadores.recyclerViewAdapterPOPULAR;
 import com.enfedaque.domain.peliculas;
-import com.enfedaque.domain.respuestaPeliculas;
 import com.enfedaque.API.PeliculasAPI;
-import com.enfedaque.domain.respuestaUpcoming;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import rx.Observer;
-import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 
 public class index extends AppCompatActivity {
 
@@ -48,6 +41,10 @@ public class index extends AppCompatActivity {
     private RecyclerView rvOther;
 
     private PeliculasAPI peliculasAPI;
+    private ConstraintLayout index;
+    private TextView etPopular;
+    private TextView etTopRated;
+    private TextView etMasOpciones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +52,7 @@ public class index extends AppCompatActivity {
         setContentView(R.layout.rv);
 
         inicializarComponentes();
+        detectarPreferencias();
 
         TaskVideos taskVideos=new TaskVideos();
         taskVideos.execute();
@@ -66,6 +64,8 @@ public class index extends AppCompatActivity {
         super.onResume();
         TaskVideos taskVideos=new TaskVideos();
         taskVideos.execute();
+
+        detectarPreferencias();
     }
 
     //Hilo que me va a lanzar la busqueda en la API
@@ -226,6 +226,10 @@ public class index extends AppCompatActivity {
         rvPopular =findViewById(R.id.rvRecyclerViewPopular);
         rvTop =findViewById(R.id.rv2);
         rvOther =findViewById(R.id.rv3);
+        index=findViewById(R.id.layoutIndex);
+        etPopular=findViewById(R.id.etPopulares);
+        etTopRated=findViewById(R.id.etTopRated);;
+        etMasOpciones=findViewById(R.id.etMasOpciones);;
     }
 
     //Añadir una pelicula a FAVORITOS
@@ -233,5 +237,33 @@ public class index extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Pelicula añadida a FAVORITOS" , Toast.LENGTH_LONG).show();
     }
 
+    //Detectar cambio de las preferencias
+    private void detectarPreferencias(){
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean cbTemas = preferencias.getBoolean("cbTemas", false);
+        boolean cbLetras = preferencias.getBoolean("cbLetras", false);
+        if (cbTemas){
+            index.setBackgroundColor(Color.LTGRAY);
+            etPopular.setTextColor(Color.BLACK);
+            etTopRated.setTextColor(Color.BLACK);
+            etMasOpciones.setTextColor(Color.BLACK);
+        }else{
+            index.setBackgroundColor(Color.BLACK);
+            etPopular.setTextColor(Color.WHITE);
+            etTopRated.setTextColor(Color.WHITE);
+            etMasOpciones.setTextColor(Color.WHITE);
+        }
+
+        if (cbLetras) {
+            etPopular.setText(etPopular.getText().toString().toUpperCase());
+            etTopRated.setText(etTopRated.getText().toString().toUpperCase());
+            etMasOpciones.setText(etMasOpciones.getText().toString().toUpperCase());
+        }else{
+            etPopular.setText(etPopular.getText().toString().toLowerCase());
+            etTopRated.setText(etTopRated.getText().toString().toLowerCase());
+            etMasOpciones.setText(etMasOpciones.getText().toString().toLowerCase());
+        }
+    }
 
 }

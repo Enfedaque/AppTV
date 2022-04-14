@@ -2,17 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popularLayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="#000000"
-    android:backgroundTint="#000000"
     android:orientation="horizontal"
     android:weightSum="100">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="85" >
+        android:layout_weight="85">
 
         <ImageView
             android:id="@+id/portada"

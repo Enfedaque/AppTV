@@ -1,13 +1,18 @@
 package com.enfedaque.adaptadores;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
@@ -29,6 +34,9 @@ public class recyclerViewAdapterPOPULAR
     private View.OnClickListener listener;
     public FloatingActionButton fab;
 
+    private LinearLayout popularLayout;
+    private MediaPlayer mp;
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         public ImageView portada;
         public FloatingActionButton fab;
@@ -37,6 +45,7 @@ public class recyclerViewAdapterPOPULAR
             super(view);
             portada=view.findViewById(R.id.portada);
             fab=view.findViewById(R.id.FAV);
+            popularLayout=view.findViewById(R.id.popularLayout);
         }
     }
 
@@ -62,6 +71,15 @@ public class recyclerViewAdapterPOPULAR
         holder.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(holder.fab.getContext());
+                boolean cbSonidos = preferencias.getBoolean("cbSonido", false);
+                if (cbSonidos){
+                    mp=MediaPlayer.create(holder.fab.getContext(), R.raw.boton1);
+                }else{
+                    mp=MediaPlayer.create(holder.fab.getContext(), R.raw.boton2);
+                }mp.start();
+
                 peliculas miPeli=listadoPeliculas.get(position);
                 baseDeDatos database= Room.databaseBuilder(view.getContext(), baseDeDatos.class,
                         "Peliculas").allowMainThreadQueries().fallbackToDestructiveMigration().build();
@@ -70,6 +88,15 @@ public class recyclerViewAdapterPOPULAR
                 Toast.makeText(view.getContext(), "Añadida a FAVORITOS", Toast.LENGTH_LONG).show();
             }
         });
+
+        SharedPreferences preferencias = PreferenceManager.getDefaultSharedPreferences(holder.fab.getContext());
+        boolean cbTemas = preferencias.getBoolean("cbTemas", false);
+        if (cbTemas){
+            popularLayout.setBackgroundColor(Color.LTGRAY);
+        }else{
+            popularLayout.setBackgroundColor(Color.BLACK);
+        }
+
     }
 
     @Override
