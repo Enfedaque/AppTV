@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager;
 
 import com.enfedaque.R;
 
-public class preferenciasView extends PreferenceActivity {
+public class preferencias extends PreferenceActivity {
 
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -18,7 +18,5 @@ public class preferenciasView extends PreferenceActivity {
         addPreferencesFromResource(R.xml.preferencias);
 
     }
-
-
 
 }

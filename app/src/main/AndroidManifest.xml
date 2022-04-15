@@ -19,7 +19,7 @@
             android:name=".VIEW.verFavoritosView"
             android:exported="false" />
         <activity
-            android:name=".VIEW.MapaView"
+            android:name=".VIEW.Mapa"
             android:exported="false" />
 
         <meta-data
@@ -30,7 +30,7 @@
             android:name=".VIEW.videosView"
             android:exported="false" />
         <activity
-            android:name=".VIEW.preferenciasView"
+            android:name=".VIEW.preferencias"
             android:exported="false" />
         <activity
             android:name=".VIEW.indexView"

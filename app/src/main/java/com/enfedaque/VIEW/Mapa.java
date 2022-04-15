@@ -46,7 +46,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class MapaView extends AppCompatActivity implements OnMapReadyCallback,
+public class Mapa extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, LocationListener {
 
 

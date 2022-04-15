@@ -21,7 +21,7 @@ public interface PeliculasAPI {
     Observable<respuestaPeliculas> findOthers();
 
     @GET("3/movie/{movie_id}/videos?api_key=1f3c6e9d137be7318fde0daa6e07d976&language=en-US")
-    Call<respuestaVideos> findVideos(@Path("movie_id") String movie_id);
+    Observable<respuestaVideos> findVideos(@Path("movie_id") String movie_id);
 
     @GET("3/movie/upcoming?api_key=1f3c6e9d137be7318fde0daa6e07d976")
     Observable<respuestaUpcoming> findUpcoming();
