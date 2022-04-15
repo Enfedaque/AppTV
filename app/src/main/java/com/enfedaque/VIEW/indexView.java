@@ -19,6 +19,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.enfedaque.CONTRACT.indexContract;
+import com.enfedaque.PRESENTER.indexPresenter;
 import com.enfedaque.R;
 import com.enfedaque.adaptadores.recyclerViewAdapterPOPULAR;
 import com.enfedaque.domain.peliculas;
@@ -31,7 +33,7 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class indexView extends AppCompatActivity {
+public class indexView extends AppCompatActivity implements indexContract.View {
 
     private RecyclerView rvPopular;
     private recyclerViewAdapterPOPULAR rvAdapter;
@@ -44,12 +46,15 @@ public class indexView extends AppCompatActivity {
     private TextView etTopRated;
     private TextView etMasOpciones;
 
+    private indexPresenter presenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rv);
 
         inicializarComponentes();
+        presenter=new indexPresenter(this);
         detectarPreferencias();
 
         TaskVideos taskVideos=new TaskVideos();
@@ -72,9 +77,9 @@ public class indexView extends AppCompatActivity {
         @Override
         protected String doInBackground(Integer... strings) {
             try{
-                findAll();
-                findAllOther();
-                findAllTopRated();
+                presenter.getPopular();
+                presenter.getTopRated();
+                presenter.getOthers();
             }catch (Exception ex){
                 ex.printStackTrace();
             }
@@ -108,47 +113,9 @@ public class indexView extends AppCompatActivity {
         return true;
     }
 
-    //POPULARES
-    private void findAll(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
-        peliculasAPI.findAllPopular()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respuestaPeliculas -> mostrarAllPopular(respuestaPeliculas.getResults()));
-    }
-
-    //TOP RATED
-    private void findAllTopRated(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
-        peliculasAPI.findAllTopRated()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respuestaPeliculas -> mostrarTopRated(respuestaPeliculas.getResults()));
-    }
-
-    //OTHERS
-    private void findAllOther(){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build();
-
-        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
-        peliculasAPI.findOthers()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(respuestaUpcoming -> mostrarUpcoming(respuestaUpcoming.getResults()));
-    }
-
     //Mostrar populares
-    private void mostrarAllPopular(List<peliculas> lista){
+    @Override
+    public void mostrarAllPopular(List<peliculas> lista){
         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
                 RecyclerView.HORIZONTAL, false);
@@ -171,8 +138,13 @@ public class indexView extends AppCompatActivity {
         });
     }
 
-    //Mostrar upComing
-    private void mostrarUpcoming(List<peliculas> listado){
+    @Override
+    public void errorPopular(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void mostrarUpcoming(List<peliculas> listado){
         List<peliculas> lista=listado;
         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
@@ -196,8 +168,13 @@ public class indexView extends AppCompatActivity {
         });
     }
 
-    //Mostrar topRated
-    private void mostrarTopRated(List<peliculas> lista){
+    @Override
+    public void errorUpcoming(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void mostrarTopRated(List<peliculas> lista){
         rvAdapter=new recyclerViewAdapterPOPULAR(lista);
         RecyclerView.LayoutManager mLayoutManager=new LinearLayoutManager(getApplicationContext(),
                 RecyclerView.HORIZONTAL, false);
@@ -218,6 +195,11 @@ public class indexView extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void errorTopRated(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     private void inicializarComponentes(){

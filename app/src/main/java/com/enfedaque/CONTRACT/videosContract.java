@@ -5,8 +5,6 @@ import com.enfedaque.domain.video;
 
 import java.util.List;
 
-import rx.Subscription;
-
 public interface videosContract {
 
     interface Model{
