@@ -101,7 +101,7 @@ public class indexView extends AppCompatActivity {
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferenciasView.class);
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }

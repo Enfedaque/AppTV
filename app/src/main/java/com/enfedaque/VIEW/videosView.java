@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.enfedaque.CONTRACT.videosContract;
+import com.enfedaque.PRESENTER.videosPresenter;
 import com.enfedaque.R;
 import com.enfedaque.domain.respuestaVideos;
 import com.enfedaque.domain.video;
@@ -26,14 +28,17 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.android.schedulers.AndroidSchedulers;
 
-public class videosView extends AppCompatActivity {
+public class videosView extends AppCompatActivity implements videosContract.View {
 
     YouTubePlayerView videoPrincipal;
     TextView tituloPrincipal;
@@ -44,6 +49,8 @@ public class videosView extends AppCompatActivity {
 
     Bundle datos;
 
+    private videosPresenter presenter;
+
     private LinearLayout videosLayout;
 
     @Override
@@ -52,6 +59,7 @@ public class videosView extends AppCompatActivity {
         setContentView(R.layout.activity_videos);
 
         iniciarComponentes();
+        presenter=new videosPresenter(this);
         detectarPreferencias();
 
         datos=getIntent().getExtras();
@@ -70,39 +78,44 @@ public class videosView extends AppCompatActivity {
         detectarPreferencias();
     }
 
+    @Override
+    public void mostrarVideo(List<video> clave) {
+        String claveVideo="";
+        for (int i=0; i < clave.size(); i++){
+            claveVideo=clave.get(i).getKey();
+        }
+        reporducirVideo(claveVideo);
+    }
+
+    @Override
+    public void avisarError(String msg) {
+        Toast.makeText(getApplicationContext(), msg.toUpperCase(), Toast.LENGTH_LONG).show();
+    }
+
+
     //Hilo que me va a lanzar la busqueda en la API
     class TaskVideos extends AsyncTask<String, Void, String>{
 
         @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
         protected String doInBackground(String... strings) {
             try{
-                getVideos(strings[0]);
+                presenter.getVideo(strings[0]);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
 
             return null;
         }
-
-        @Override
-        protected void onPostExecute(String s) {
-
-        }
     }
 
-    private void iniciarComponentes(){
-        videoPrincipal=findViewById(R.id.videoPrincipal);
-        tituloPrincipal=findViewById(R.id.tituloPrincipal);
-        popularity =findViewById(R.id.generoPrincipal);
-        fechaPrincipal=findViewById(R.id.fechaPrincipal);
-        overviewPrincipal=findViewById(R.id.overviewPrincipal);
-        btnCine=findViewById(R.id.btnCine);
-        videosLayout=findViewById(R.id.videosLayout);
+    //Reproducir video
+    private void reporducirVideo(String clave){
+        videoPrincipal.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                youTubePlayer.loadVideo(clave, 0);
+            }
+        });
     }
 
     //MEnu superior àra volver al index o recargarlo
@@ -124,70 +137,26 @@ public class videosView extends AppCompatActivity {
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferenciasView.class);
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }
         return true;
     }
 
-    //Conecto con la API para obtener el video de la pelicula
-    private void getVideos(String idPelicula){
-        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://api.themoviedb.org/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        PeliculasAPI peliculasAPI =retrofit.create(PeliculasAPI.class);
-        Call<respuestaVideos> call=peliculasAPI.findVideos(idPelicula);
-
-        call.enqueue(new Callback<respuestaVideos>() {
-            @Override
-            public void onResponse(Call<respuestaVideos> call, Response<respuestaVideos> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        respuestaVideos miRespuesta=response.body();
-
-                        ArrayList<video> lista=miRespuesta.getResults();
-                        System.out.println(lista);
-
-                        String clave="";
-                        for (int i=0; i < lista.size(); i++){
-                            clave=lista.get(i).getKey();
-                        }
-
-                        reporducirVideo(clave);
-
-                    }else{
-                        Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR 1" , Toast.LENGTH_LONG).show();
-                        System.out.println(response.raw());
-                    }
-                }catch (Exception ex){
-
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<respuestaVideos> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "ERROR AL CONECTAR 2" , Toast.LENGTH_LONG).show();
-                System.out.println(t.getMessage());
-            }
-        });
-    }
-
-    //Reproducir video
-    private void reporducirVideo(String clave){
-        videoPrincipal.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                youTubePlayer.loadVideo(clave, 0);
-            }
-        });
+    private void iniciarComponentes(){
+        videoPrincipal=findViewById(R.id.videoPrincipal);
+        tituloPrincipal=findViewById(R.id.tituloPrincipal);
+        popularity =findViewById(R.id.generoPrincipal);
+        fechaPrincipal=findViewById(R.id.fechaPrincipal);
+        overviewPrincipal=findViewById(R.id.overviewPrincipal);
+        btnCine=findViewById(R.id.btnCine);
+        videosLayout=findViewById(R.id.videosLayout);
     }
 
     //Metodo que me manda a ver el cine donde se pone la pelicula
     public void abrirMapaCine(View view){
-        Intent miIntent=new Intent(this, MapaView.class);
+        Intent miIntent=new Intent(this, Mapa.class);
         startActivity(miIntent);
     }
 

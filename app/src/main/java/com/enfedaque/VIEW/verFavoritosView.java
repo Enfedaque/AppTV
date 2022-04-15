@@ -5,7 +5,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
-import androidx.room.Room;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.enfedaque.BBDD.baseDeDatos;
 import com.enfedaque.CONTRACT.verFavoritosContract;
 import com.enfedaque.PRESENTER.verFavoritosPresenter;
 import com.enfedaque.R;
@@ -107,7 +105,7 @@ public class verFavoritosView extends AppCompatActivity implements verFavoritosC
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.pref){
-            Intent miIntent=new Intent(this, preferenciasView.class);
+            Intent miIntent=new Intent(this, preferencias.class);
             startActivity(miIntent);
             return true;
         }else if(item.getItemId() == R.id.verFav){
