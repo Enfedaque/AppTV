@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#020202"
     android:backgroundTint="#000000"
-    tools:context=".VIEW.registrarseView">
+    tools:context=".MVP.VIEW.registrarseView">
 
     <LinearLayout
         android:layout_width="match_parent"
